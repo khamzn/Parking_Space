@@ -23,7 +23,7 @@ def ckeckParkingSpace(img, list):
             masked = cv2.bitwise_and(img, img, mask=mask)
 
             count = cv2.countNonZero(masked)
-            cv2.putText(image, str(count), list[i][0], cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
+            #cv2.putText(image, str(count), list[i][0], cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
             cv2.putText(image, str(i+1), list[i][2], cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
 
             if count<600:
