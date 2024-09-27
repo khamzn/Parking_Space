@@ -3,22 +3,28 @@ import cv2
 import numpy as np
 
 try:
-    with open('CarPosT', 'rb') as f:
+    with open('CarPos', 'rb') as f:
         posList = pickle.load(f)
 except:
     posList = []
 
-img = cv2.imread('images/carParkImg.png')
+cap = cv2.VideoCapture(0)
+for i in range(2):
+    succes, img = cap.read()
+
 
 def mouseClick(events, x, y, flags, params):
+    global img
     if events == cv2.EVENT_LBUTTONDOWN:
         posList.append([x, y])
     if events == cv2.EVENT_RBUTTONDOWN:
         for i in range(len(posList)):
             posList.pop(0)
-            cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
+        for i in range(2):
+            succes, img = cap.read()
 
-    with open('CarPosT', 'wb') as f:
+    with open('CarPos', 'wb') as f:
         pickle.dump(posList, f)
 
 def poly(imgPoly, list):
@@ -26,10 +32,10 @@ def poly(imgPoly, list):
 
     for i in range(len(list)):
         if len(list[i])%4 == 0:
-            print(list[i])
             list2 = np.array(list[i], np.int32)
             list2 = list2.reshape((-1, 1, 2))
-            cv2.polylines(imgPoly, [list2], True, (255, 0, 0))
+            cv2.polylines(imgPoly, [list2], True, (255, 0, 0), thickness=2)
+
 
 while True:
     cv2.imshow("Image", img)
