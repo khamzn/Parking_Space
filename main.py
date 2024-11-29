@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 import math
 
-cap = cv2.VideoCapture('..')
+cap = cv2.VideoCapture(0)
 
 value = 0.014
 
