@@ -3,13 +3,15 @@ import cv2
 import pickle
 import numpy as np
 import math
+import sqlite3
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('../captures/video_2024-11-01_11-56-29.mp4')
 
 value = 0.014
 
 with open('CarPos', 'rb') as f:
     posList = pickle.load(f)
+
 
 def square_poly(coords):
     x1, y1 = coords[0][0][0], coords[0][0][1]
@@ -53,9 +55,30 @@ def check_space(img, posList):
             cv2.polylines(image, [pos], True, color, thickness=thickness)
 
     spaces = [str(i) for i in spaces]
+    spl = spaces
     spaces = ','.join(spaces)
-    cv2.putText(image, f'empty spaces: {spaces}', (0, 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1)
-    return spaces
+    cv2.putText(image, f'empty spaces: {spaces}', (0, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 1)
+    return spl
+
+
+def insert_to_db(content, path):
+    conn = sqlite3.connect(path)
+    conn.execute(f'INSERT INTO spaces(id) VALUES ("{content}")')
+    conn.commit()
+    conn.close()
+
+
+def delete_db(path):
+    conn = sqlite3.connect(path)
+    conn.execute('DELETE FROM spaces')
+    conn.commit()
+    conn.close()
+
+
+def post():
+    delete_db("server/instance/database_parking.db")
+    for i in check_space(img_post, posList):
+        insert_to_db(int(i), 'server/instance/database_parking.db')
 
 
 while True:
@@ -71,7 +94,7 @@ while True:
     kernel = np.ones((3, 3), np.uint8)
     img_post = cv2.dilate(img_post, kernel, iterations=1)
 
-    check_space(img_post, posList)
+    post()
 
     cv2.imshow("Image", image)
     cv2.waitKey(10)
