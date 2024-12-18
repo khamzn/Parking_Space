@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>СВОБОДНЫЕ МЕСТА</title>
+  </head>
+  <body>
+    <h1>СВОБОДНЫЕ МЕСТА</h1>
+    <div class="spaces">
+      {% for i in free_spaces%}
+      <p>{{ i }}</p>
+      {% endfor %}
+    </div>
+    <hr>
+    <div class="btn">
+      <a href=""> Обновить страницу </a>
+    </div>
+  </body>
+</html>

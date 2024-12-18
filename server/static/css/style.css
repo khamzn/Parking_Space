@@ -1,0 +1,35 @@
+body{
+    background-color: rgb(26, 26, 26);
+}
+
+h1{
+    color: #fff0dc;
+    text-align: center;
+}
+
+.spaces{
+    text-align: center;
+    font-size: 45px;
+}
+
+p{
+    display: inline-block;
+    color: wheat;
+}
+
+.btn{
+    text-align: center;
+}
+
+a:link, a:visited{
+    background-color: coral;
+    color: #fff0dc;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+a:hover, a:active{
+    background-color: #cf5d34;
+}
