@@ -16,7 +16,7 @@ def square_poly(coords):
     x2, y2 = coords[1][0][0], coords[1][0][1]
     x3, y3 = coords[2][0][0], coords[2][0][1]
     x4, y4 = coords[3][0][0], coords[3][0][1]
-    a = math.sqrt(abs(x2 - x1) ** 2+abs(y2-y1)**2)
+    a = math.sqrt(abs(x2 - x1) ** 2 + abs(y2-y1)**2)
     b = math.sqrt(abs(x3 - x2) ** 2 + abs(y3 - y2) ** 2)
     c = math.sqrt(abs(x4 - x3) ** 2 + abs(y4 - y3) ** 2)
     d = math.sqrt(abs(x1 - x4) ** 2 + abs(y1 - y4) ** 2)
