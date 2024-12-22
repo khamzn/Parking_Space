@@ -8,12 +8,12 @@ try:
 except:
     posList = []
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('../captures/video_2024-11-01_11-56-29.mp4')
 for i in range(2):
     succes, img = cap.read()
 
 
-def mouseClick(events, x, y, flags, params):
+def mouse_click(events, x, y, flags, params):
     global img
     if events == cv2.EVENT_LBUTTONDOWN:
         posList.append([x, y])
@@ -27,11 +27,12 @@ def mouseClick(events, x, y, flags, params):
     with open('CarPos', 'wb') as f:
         pickle.dump(posList, f)
 
+
 def poly(imgPoly, list):
     list = [list[i:i + 4] for i in range(0, len(list), 4)]
 
     for i in range(len(list)):
-        if len(list[i])%4 == 0:
+        if len(list[i]) % 4 == 0:
             list2 = np.array(list[i], np.int32)
             list2 = list2.reshape((-1, 1, 2))
             cv2.polylines(imgPoly, [list2], True, (255, 0, 0), thickness=2)
@@ -39,6 +40,8 @@ def poly(imgPoly, list):
 
 while True:
     cv2.imshow("Image", img)
-    cv2.setMouseCallback("Image", mouseClick)
+    cv2.setMouseCallback("Image", mouse_click)
     poly(img, posList)
-    cv2.waitKey(1)
+
+    if cv2.waitKey(1) == 27:
+        break
