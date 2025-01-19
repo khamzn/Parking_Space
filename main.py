@@ -4,7 +4,35 @@ import pickle
 import numpy as np
 import sqlite3
 
-cap = cv2.VideoCapture(0)
+def listCameraIndexes() -> list:
+    index = 0
+    arr = []
+    i = 10
+    while i > 0:
+        cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
+        if cap.isOpened():
+            width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+            height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+            print(f'*  [{index}] video_{width:.0f}x{height:.0f}')
+            arr.append(index)
+        index += 1
+        i -= 1
+    return arr
+
+print("List of available cameras:")
+camerasList : list = listCameraIndexes()
+print()
+cameraIndex : int = -1
+while True:
+    print("Select the camera to work with (see the cameras list above, enter -1 to exit):")
+    cameraIndex : int = int(input())
+    if cameraIndex == -1:
+        exit(0)
+    if cameraIndex in camerasList:
+        break
+    print(f'Sorry, camera {cameraIndex} is not in the available cameras list {camerasList}')
+
+cap = cv2.VideoCapture(cameraIndex)
 
 value = 0.13
 
@@ -81,7 +109,7 @@ def image_processing(image):
 while True:
 
     #if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
-        #cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+    #    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     success, image = cap.read()
     img_post = image_processing(image)
