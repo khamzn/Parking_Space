@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 import sqlite3
 
-cap = cv2.VideoCapture('../captures/video_2024-11-01_11-56-29.mp4')
+cap = cv2.VideoCapture(0)
 
 value = 0.13
 
@@ -80,8 +80,8 @@ def image_processing(image):
 
 while True:
 
-    if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
-        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+    #if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
+        #cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     success, image = cap.read()
     img_post = image_processing(image)
