@@ -8,7 +8,7 @@ try:
 except:
     posList = []
 
-cap = cv2.VideoCapture('../captures/video_2024-11-01_11-56-29.mp4')
+cap = cv2.VideoCapture('video_2024-11-01_11-56-29.mp4')
 for i in range(2):
     succes, img = cap.read()
 
@@ -38,10 +38,11 @@ def poly(imgPoly, list):
             cv2.polylines(imgPoly, [list2], True, (255, 0, 0), thickness=2)
 
 
-while True:
-    cv2.imshow("Image", img)
-    cv2.setMouseCallback("Image", mouse_click)
-    poly(img, posList)
+def picker():
+    while True:
+        cv2.imshow("Image", img)
+        cv2.setMouseCallback("Image", mouse_click)
+        poly(img, posList)
 
-    if cv2.waitKey(1) == 27:
-        break
+        if cv2.waitKey(1) == 27:
+            break
