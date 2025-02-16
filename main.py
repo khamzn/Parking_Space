@@ -3,6 +3,8 @@ import cv2
 import pickle
 import numpy as np
 import sqlite3
+import picker
+
 
 def listCameraIndexes() -> list:
     index = 0
@@ -34,10 +36,15 @@ while True:
 
 cap = cv2.VideoCapture(cameraIndex)
 
-value = 0.13
+value = 0.04
 
-with open('CarPos', 'rb') as f:
-    posList = pickle.load(f)
+try:
+    with open('CarPos', 'rb') as f:
+        posList = pickle.load(f)
+except:
+    picker.picker()
+    with open('CarPos', 'rb') as f:
+        posList = pickle.load(f)
 
 
 def check_space(img, posList):
@@ -108,8 +115,8 @@ def image_processing(image):
 
 while True:
 
-    #if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
-    #    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+    if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
+        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     success, image = cap.read()
     img_post = image_processing(image)
