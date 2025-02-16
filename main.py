@@ -115,8 +115,8 @@ def image_processing(image):
 
 while True:
 
-    if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
-        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+    #if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
+        #cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     success, image = cap.read()
     img_post = image_processing(image)
