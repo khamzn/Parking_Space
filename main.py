@@ -38,13 +38,8 @@ cap = cv2.VideoCapture(cameraIndex)
 
 value = 0.04
 
-try:
-    with open('CarPos', 'rb') as f:
-        posList = pickle.load(f)
-except:
-    picker.picker()
-    with open('CarPos', 'rb') as f:
-        posList = pickle.load(f)
+with open('CarPos', 'rb') as f:
+    posList = pickle.load(f)
 
 
 def check_space(img, posList):
