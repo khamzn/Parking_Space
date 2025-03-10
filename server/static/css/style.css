@@ -1,9 +1,9 @@
 body{
-    background-color: rgb(26, 26, 26);
+    background-color: #131516;
 }
 
 h1{
-    color: #fff0dc;
+    color: coral;
     text-align: center;
 }
 
@@ -22,8 +22,8 @@ p{
 }
 
 a:link, a:visited{
-    background-color: coral;
-    color: #fff0dc;
+    background-color: wheat;
+    color: #131516;
     padding: 14px 25px;
     text-align: center;
     text-decoration: none;
@@ -33,3 +33,14 @@ a:link, a:visited{
 a:hover, a:active{
     background-color: #cf5d34;
 }
+
+svg {
+    width: 100%;
+    height: 500px;
+    background-color: #131516;
+    }
+
+polygon {
+    fill: none;
+    stroke-width: 3;
+    }
