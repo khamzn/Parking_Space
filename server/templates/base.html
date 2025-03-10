@@ -2,14 +2,21 @@
 <html>
   <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>СВОБОДНЫЕ МЕСТА</title>
+    <title>Парковка</title>
   </head>
+
   <body>
     <h1>СВОБОДНЫЕ МЕСТА</h1>
     <div class="spaces">
-      {% for i in free_spaces%}
-      <p>{{ i }}</p>
-      {% endfor %}
+      <p>{{ free_spaces }}</p>
+    </div>
+    <hr>
+    <div class="coords">
+      <svg viewBox="0 0 1300 800">
+        {% for coord, color in quads %}
+            <polygon points="{{ coord }}" stroke="rgb({{ color }})"></polygon>
+        {% endfor %}
+      </svg>
     </div>
     <hr>
     <div class="btn">
