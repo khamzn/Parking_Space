@@ -8,7 +8,7 @@ try:
 except:
     posList = []
 
-cap = cv2.VideoCapture('../captures/video_2024-11-01_11-56-29.mp4')
+cap = cv2.VideoCapture(0)
 for i in range(2):
     succes, img = cap.read()
 
@@ -45,3 +45,4 @@ while True:
 
     if cv2.waitKey(1) == 27:
         break
+        
