@@ -3,7 +3,6 @@ import cv2
 import pickle
 import numpy as np
 import sqlite3
-import picker
 
 
 def listCameraIndexes() -> list:
@@ -21,13 +20,14 @@ def listCameraIndexes() -> list:
         i -= 1
     return arr
 
+
 print("List of available cameras:")
-camerasList : list = listCameraIndexes()
+camerasList: list = listCameraIndexes()
 print()
-cameraIndex : int = -1
+cameraIndex: int = -1
 while True:
     print("Select the camera to work with (see the cameras list above, enter -1 to exit):")
-    cameraIndex : int = int(input())
+    cameraIndex: int = int(input())
     if cameraIndex == -1:
         exit(0)
     if cameraIndex in camerasList:
@@ -44,7 +44,9 @@ with open('CarPos', 'rb') as f:
 
 def check_space(img, posList):
     posList = [posList[i:i + 4] for i in range(0, len(posList), 4)]
-    spaces = []
+    status = []
+    colors = []
+    free_spaces = 0
 
     for i in range(len(posList)):
         if len(posList[i]) % 4 == 0:
@@ -57,31 +59,29 @@ def check_space(img, posList):
             masked = cv2.bitwise_and(img, img, mask=mask)
 
             count = cv2.countNonZero(masked)
-            cv2.putText(image, str(count/cv2.contourArea(pos)), posList[i][0], cv2.FONT_HERSHEY_PLAIN, 1, (255,255,255), 1)
-            #cv2.putText(image, str(i+1), posList[i][2], cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1)
+            cv2.putText(image, str(count / cv2.contourArea(pos)), posList[i][0], cv2.FONT_HERSHEY_PLAIN, 1,
+                        (255, 255, 255), 1)
+            # cv2.putText(image, str(i+1), posList[i][2], cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1)
 
-            if count/cv2.contourArea(pos) < value:
+            if count / cv2.contourArea(pos) < value:
                 color = (0, 255, 0)
+
                 thickness = 3
-                spaces.append(i+1)
+                status.append(True)
             else:
                 color = (0, 0, 255)
                 thickness = 2
+                status.append(False)
 
             cv2.polylines(image, [pos], True, color, thickness=thickness)
+            colors.append(color[::-1])
 
-    spaces = [str(i) for i in spaces]
-    spl = spaces
-    spaces = ','.join(spaces)
-    cv2.putText(image, f'empty spaces: {spaces}', (0, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0,0,255), 1)
-    return spl
+    for i in range(len(status)):
+        if status[i]:
+            free_spaces += 1
+    cv2.putText(image, f'empty spaces: {str(free_spaces)}', (0, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 255), 1)
 
-
-def insert_to_db(content, path):
-    conn = sqlite3.connect(path)
-    conn.execute(f'INSERT INTO spaces(id) VALUES ("{content}")')
-    conn.commit()
-    conn.close()
+    return colors, status
 
 
 def delete_db(path):
@@ -93,8 +93,21 @@ def delete_db(path):
 
 def post():
     delete_db("server/instance/database_parking.db")
-    for i in check_space(img_post, posList):
-        insert_to_db(int(i), 'server/instance/database_parking.db')
+
+    colors, status = check_space(img_post, posList)
+
+    data_to_insert = []
+    for i in range(0, len(posList), 4):
+        quad_id = i // 4 + 1  # Номер четырехугольника
+        quad_coords = ' '.join([f"{x},{y}" for x, y in posList[i:i + 4]])  # Формируем строку с координатами
+        color_str = ', '.join(map(str, colors[i // 4]))
+        data_to_insert.append((quad_id, quad_coords, color_str, status[i // 4]))
+
+    # Записываем все значения разом
+    conn = sqlite3.connect("server/instance/database_parking.db")
+    conn.executemany('INSERT INTO spaces VALUES(?, ?, ?, ?)', data_to_insert)
+    conn.commit()
+    conn.close()
 
 
 def image_processing(image):
@@ -110,8 +123,8 @@ def image_processing(image):
 
 while True:
 
-    #if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
-        #cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+    # if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
+    # cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     success, image = cap.read()
     img_post = image_processing(image)
@@ -119,6 +132,7 @@ while True:
     post()
 
     cv2.imshow("Image", image)
-    
+
     if cv2.waitKey(10) == 27:
         break
+        
