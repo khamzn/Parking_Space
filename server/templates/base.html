@@ -11,10 +11,10 @@
       <p>{{ free_spaces }}</p>
     </div>
     <hr>
-    <div class="coords">
-      <svg viewBox="0 0 1300 800">
+    <div class="cords">
+      <svg viewBox="0 0 1920 1080">
         {% for coord, color in quads %}
-            <polygon points="{{ coord }}" stroke="rgb({{ color }})"></polygon>
+            <polygon points="{{ cord }}" stroke="rgb({{ color }})"></polygon>
         {% endfor %}
       </svg>
     </div>
