@@ -12,8 +12,8 @@
     </div>
     <hr>
     <div class="cords">
-      <svg viewBox="0 0 1920 1080">
-        {% for coord, color in quads %}
+      <svg width="{{ resX }}" height="{{ resY }}">
+        {% for cord, color in quads %}
             <polygon points="{{ cord }}" stroke="rgb({{ color }})"></polygon>
         {% endfor %}
       </svg>
