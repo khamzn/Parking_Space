@@ -87,13 +87,6 @@ def check_space(img, posList):
     return colors, status
 
 
-def delete_db(path):
-    conn = sqlite3.connect(path)
-    conn.execute('DELETE FROM spaces')
-    conn.commit()
-    conn.close()
-
-
 def post():
     colors, status = check_space(img_post, posList)
 
