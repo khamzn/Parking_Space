@@ -13,7 +13,9 @@ def init_db(path):
             id INTEGER PRIMARY KEY,
             cords VARCHAR,
             color VARCHAR,
-            status BOOLEAN
+            status BOOLEAN,
+            resX INT,
+            resY INT
         )
     ''')
     conn.commit()
@@ -30,19 +32,19 @@ def delete_db(path):
 def insert_into_db(data):
     delete_db(database)
     conn = sqlite3.connect(database)
-    conn.executemany('INSERT INTO spaces VALUES(?, ?, ?, ?)', data)
+    conn.executemany('INSERT INTO spaces VALUES(?, ?, ?, ?, ?, ?)', data)
     conn.commit()
     conn.close()
 
 
 @server.before_request
 def before_request():
-    init_db('instance/database_parking.db')
+    init_db(database)
 
 
 @server.route('/')
 def index():
-    conn = sqlite3.connect('instance/database_parking.db')
+    conn = sqlite3.connect(database)
     rows = conn.execute('SELECT * FROM spaces').fetchall()
     free_spaces = 0
     colors = []
@@ -53,8 +55,10 @@ def index():
             free_spaces += 1
         cords.append(rows[i][1])
         colors.append(rows[i][2])
+        resX = rows[i][4]
+        resY = rows[i][5]
     conn.close()
-    return render_template('base.html', free_spaces=free_spaces, quads=zip(cords, colors))
+    return render_template('base.html', free_spaces=free_spaces, quads=zip(cords, colors), resX = resX, resY = resY)
 
 
 @server.route('/add_data', methods=['POST'])
@@ -62,6 +66,7 @@ def add_data():
     try:
         data = request.json
         insert_into_db(data)
+        return jsonify({"status": "success"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
