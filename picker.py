@@ -18,8 +18,8 @@ def mouse_click(events, x, y, flags, params):
     if events == cv2.EVENT_LBUTTONDOWN:
         posList.append([x, y])
     if events == cv2.EVENT_RBUTTONDOWN:
-        for i in range(len(posList)):
-            posList.pop(0)
+        for i in range(4):
+            posList.pop()
         cv2.destroyAllWindows()
         for i in range(2):
             succes, img = cap.read()
@@ -45,4 +45,3 @@ while True:
 
     if cv2.waitKey(1) == 27:
         break
-        
