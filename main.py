@@ -37,7 +37,7 @@ while True:
         break
     print(f'Sorry, camera {cameraIndex} is not in the available cameras list {camerasList}')
 
-cap = cv2.VideoCapture(cameraIndex)
+cap = cv2.VideoCapture('0212(3).mp4')
 
 value = 0.04
 
@@ -96,8 +96,9 @@ def post():
         quad_id = i // 4 + 1  # Номер четырехугольника
         quad_coords = ' '.join([f"{x},{y}" for x, y in posList[i:i + 4]])  # Формируем строку с координатами
         color_str = ', '.join(map(str, colors[i // 4]))
-        data_to_insert.append((quad_id, quad_coords, color_str, status[i // 4]))
-
+        width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        data_to_insert.append((quad_id, quad_coords, color_str, status[i // 4], width, height))
     try:
         response = requests.post(API_URL, json=data_to_insert)
         response.raise_for_status()
@@ -130,3 +131,4 @@ while True:
 
     if cv2.waitKey(10) == 27:
         break
+        
