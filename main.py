@@ -3,6 +3,9 @@ import cv2
 import pickle
 import numpy as np
 import sqlite3
+import requests
+
+API_URL = "http://127.0.0.1:5000/add_data"
 
 
 def listCameraIndexes() -> list:
@@ -34,7 +37,7 @@ while True:
         break
     print(f'Sorry, camera {cameraIndex} is not in the available cameras list {camerasList}')
 
-cap = cv2.VideoCapture(cameraIndex)
+cap = cv2.VideoCapture('0212(3).mp4')
 
 value = 0.04
 
@@ -92,22 +95,21 @@ def delete_db(path):
 
 
 def post():
-    delete_db("server/instance/database_parking.db")
-
     colors, status = check_space(img_post, posList)
 
     data_to_insert = []
+
     for i in range(0, len(posList), 4):
         quad_id = i // 4 + 1  # Номер четырехугольника
         quad_coords = ' '.join([f"{x},{y}" for x, y in posList[i:i + 4]])  # Формируем строку с координатами
         color_str = ', '.join(map(str, colors[i // 4]))
         data_to_insert.append((quad_id, quad_coords, color_str, status[i // 4]))
 
-    # Записываем все значения разом
-    conn = sqlite3.connect("server/instance/database_parking.db")
-    conn.executemany('INSERT INTO spaces VALUES(?, ?, ?, ?)', data_to_insert)
-    conn.commit()
-    conn.close()
+    try:
+        response = requests.post(API_URL, json=data_to_insert)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Ошибка при отправке данных: {e}")
 
 
 def image_processing(image):
@@ -123,8 +125,8 @@ def image_processing(image):
 
 while True:
 
-    # if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
-    # cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+    if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
+        cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
     success, image = cap.read()
     img_post = image_processing(image)
@@ -135,4 +137,3 @@ while True:
 
     if cv2.waitKey(10) == 27:
         break
-        
