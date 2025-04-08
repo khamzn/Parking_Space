@@ -39,24 +39,18 @@ def insert_into_db(data):
 
 @server.before_request
 def before_request():
-    init_db(database)
+    init_db('instance/database_parking.db')
 
 
 @server.route('/')
 def index():
-    conn = sqlite3.connect(database)
+    conn = sqlite3.connect('instance/database_parking.db')
     rows = conn.execute('SELECT * FROM spaces').fetchall()
-    free_spaces = 0
-    colors = []
-    cords = []
-    print(rows)
-    for i in range(len(rows)):
-        if rows[i][3]:
-            free_spaces += 1
-        cords.append(rows[i][1])
-        colors.append(rows[i][2])
-        resX = rows[i][4]
-        resY = rows[i][5]
+    free_spaces = conn.execute("SELECT COUNT(status) FROM spaces WHERE status = 1").fetchone()[0]
+    colors = [row[0] for row in conn.execute('SELECT color FROM spaces').fetchall()]
+    cords = [row[0] for row in conn.execute('SELECT cords FROM spaces').fetchall()]
+    resX = conn.execute("SELECT resX FROM spaces").fetchone()[0]
+    resY = conn.execute("SELECT resY FROM spaces").fetchone()[0]
     conn.close()
     return render_template('base.html', free_spaces=free_spaces, quads=zip(cords, colors), resX = resX, resY = resY)
 
@@ -69,6 +63,13 @@ def add_data():
         return jsonify({"status": "success"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@server.route('/api/spaces/getfree', methods=['GET'])
+def on_request_get_free_spaces():
+    conn = sqlite3.connect('instance/database_parking.db')
+    print('GET request : api/spaces/getfree')
+    return f'<font color="#009900">{conn.execute("SELECT COUNT(status) FROM spaces WHERE status = 1").fetchone()[0]}</font> spaces only were requested'
 
 
 server.run()
