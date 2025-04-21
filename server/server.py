@@ -72,4 +72,4 @@ def on_request_get_free_spaces():
     return f'<font color="#009900">{conn.execute("SELECT COUNT(status) FROM spaces WHERE status = 1").fetchone()[0]}</font> spaces only were requested'
 
 
-server.run()
+server.run(host='0.0.0.0', port=5000)
