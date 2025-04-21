@@ -37,7 +37,7 @@ while True:
         break
     print(f'Sorry, camera {cameraIndex} is not in the available cameras list {camerasList}')
 
-cap = cv2.VideoCapture('0212(3).mp4')
+cap = cv2.VideoCapture(cameraIndex)
 
 value = 0.04
 
