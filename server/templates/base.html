@@ -12,8 +12,8 @@
       <p>{{ free_spaces }}</p>
     </div>
     <hr>
-    <div class="cords">
-      <svg width="{{ resX }}" height="{{ resY }}">
+    <div class="cords" style="width: 100%; max-width: 100vw; overflow-x: hidden;">
+      <svg viewBox="0 0 {{ resX }} {{ resY }}" width="100%" preserveAspectRatio="xMidYMid meet">
         {% for cord, color in quads %}
             <polygon points="{{ cord }}" stroke="rgb({{ color }})"></polygon>
         {% endfor %}
